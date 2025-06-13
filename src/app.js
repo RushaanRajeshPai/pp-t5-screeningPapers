@@ -41,8 +41,8 @@ async function agent1_processInput(state) {
     // Validate each paper has required fields
     for (let i = 0; i < state.inputPapers.length; i++) {
       const paper = state.inputPapers[i];
-      if (!paper.title || !paper.abstract || !paper.content) {
-        throw new Error(`Paper ${i + 1} missing required fields: title, abstract, or content`);
+      if (!paper.title || !paper.abstract) {
+        throw new Error(`Paper ${i + 1} missing required fields: title, or abstract`);
       }
     }
     
@@ -86,7 +86,6 @@ async function agent2_extractMetadata(state) {
       Paper Details:
       Title: ${paper.title}
       Abstract: ${paper.abstract}
-      Content Preview: ${paper.content.substring(0, 2000)}...
       
       Extract only factual information present in the paper. If information is not available, use "Not specified".
       `;
@@ -214,7 +213,7 @@ async function agent4_evaluatePapers(state) {
       ).join('\n');
       
       const prompt = `
-      Evaluate this research paper against the following 6 criteria. For each criterion, respond with exactly "Yes", "Maybe", or "No" based on the paper content.
+      Evaluate this research paper against the following 6 criteria. For each criterion, respond with exactly "Yes", "Maybe", or "No" based on the paper metadata.
       
       CRITERIA:
       ${criteriaText}
@@ -488,8 +487,7 @@ app.post('/screen-papers', async (req, res) => {
           papers: [
             {
               title: "Paper title",
-              abstract: "Paper abstract",
-              content: "Full paper content or substantial excerpt"
+              abstract: "Paper abstract"
             }
           ]
         }
@@ -572,7 +570,6 @@ app.get('/test-dummy', async (req, res) => {
   const dummyPapers = Array.from({ length: 50 }, (_, i) => ({
     title: `Research Paper ${i + 1}: Impact of AI on Healthcare Systems`,
     abstract: `This study examines the implementation of artificial intelligence in healthcare systems. The research focuses on efficiency improvements, cost reduction, and patient outcome enhancement. We conducted a comprehensive analysis of ${Math.floor(Math.random() * 1000) + 100} healthcare facilities over a ${Math.floor(Math.random() * 3) + 1}-year period.`,
-    content: `Introduction: Artificial intelligence has revolutionized healthcare delivery systems worldwide. This comprehensive study investigates the multifaceted impact of AI implementation across various healthcare domains. Our research methodology involved systematic data collection, statistical analysis, and longitudinal observation of healthcare outcomes. The study population included diverse healthcare facilities ranging from small clinics to large hospital systems. Results indicate significant improvements in diagnostic accuracy, treatment efficiency, and cost-effectiveness. However, challenges related to implementation costs, staff training, and ethical considerations were also identified. The findings suggest that while AI adoption presents substantial benefits, careful consideration of implementation strategies is crucial for successful integration into existing healthcare frameworks.`
   }));
   
   try {
